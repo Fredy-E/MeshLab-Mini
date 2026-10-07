@@ -1,8 +1,5 @@
-<h1 align="center">MeshLab Mini</h1>
-
 <p align="center">
-  <strong>Explore geometry. See the mesh. Export what you build.</strong><br>
-  A tiny, independent WebGL2 procedural mesh explorer — no packages, no network requests.
+  <img src="assets/banner.png" alt="MeshLab Mini - a tiny WebGL2 procedural mesh explorer" width="100%">
 </p>
 
 <p align="center">
