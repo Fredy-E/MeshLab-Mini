@@ -1,0 +1,13 @@
+{
+  "name": "meshlab-mini",
+  "private": true,
+  "description": "Tiny WebGL2 procedural mesh explorer. Dev tooling only: the app itself has no runtime dependencies.",
+  "scripts": {
+    "test": "node tests/geometry.test.cjs",
+    "test:browser": "node tests/browser.cjs",
+    "screenshot": "node scripts/screenshot.cjs"
+  },
+  "devDependencies": {
+    "playwright": "1.63.0"
+  }
+}
