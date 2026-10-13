@@ -5,9 +5,11 @@
   "scripts": {
     "test": "node tests/geometry.test.cjs",
     "test:browser": "node tests/browser.cjs",
-    "screenshot": "node scripts/screenshot.cjs"
+    "screenshot": "node scripts/screenshot.cjs",
+    "verify": "node tests/geometry.test.cjs && node --test tests/ui-shell.test.cjs && node tests/browser.cjs"
   },
   "devDependencies": {
     "playwright": "1.63.0"
-  }
+  },
+  "version": "0.2.0-preview.1"
 }

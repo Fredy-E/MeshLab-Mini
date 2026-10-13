@@ -1,3 +1,88 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>MeshLab Mini</title><link rel="stylesheet" href="style.css"></head><body><main><header><div><p class="eyebrow">FREDY-E / CREATIVE TOOLS</p><h1>MeshLab Mini</h1><p class="subtitle">Explore geometry. See the mesh. Export what you build.</p></div><span class="icon">MM</span></header><section class="controls-grid"><label>Primitive<select id="shape"><option value="sphere">Sphere</option><option value="torus">Torus</option><option value="cylinder">Capped cylinder</option></select></label><label>Segments<input id="segments" type="range" min="8" max="96" value="40"><output id="segment-value">40</output></label><label>Rings<input id="rings" type="range" min="4" max="48" value="20"><output id="ring-value">20</output></label><label><input id="wire" type="checkbox">Wireframe</label><label><input id="normals" type="checkbox">Normal colors</label><button id="export">Export OBJ</button></section><p class="notice" id="message" role="status">Drag to rotate. Use the mouse wheel to zoom. Geometry is generated locally.</p><canvas id="canvas" style="height:500px" aria-label="Interactive procedural mesh"></canvas><p class="meta" id="counts"></p><footer>Raw WebGL2 · No downloaded models · No dependencies · Normal colors use object-space normals</footer></main><script src="geometry.js"></script><script src="renderer.js"></script><script>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MeshLab Mini</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main data-ui-revision="portfolio-preview-1">
+<header class="masthead">
+<div class="masthead-text">
+<p class="eyebrow">FREDY-E / CREATIVE TOOLS</p>
+<h1>MeshLab Mini</h1>
+<p class="subtitle">Procedural sphere, torus, and capped cylinder. Adjust subdivisions, inspect the live viewport, and export OBJ geometry with normals.</p>
+<ul class="status-pills" aria-label="Tool guarantees">
+<li>Offline only</li>
+<li>3 parametric surfaces</li>
+<li>WebGL2 viewport</li>
+</ul>
+</div>
+<span class="icon" aria-hidden="true">MM</span>
+</header>
+<p class="prototype-notice" id="prototype-notice" role="note">Experimental concept prototype — idea exploration only. Not a finished product and not production-ready. A small procedural explorer, not a modeling suite.</p>
+<div class="workbench">
+<section class="panel controls" aria-labelledby="controls-heading">
+<h2 id="controls-heading">Geometry controls</h2>
+<p class="hint">Every change rebuilds the mesh from formulas and updates the statistics below the viewport.</p>
+<div class="control-group">
+<label for="shape">Primitive
+<select id="shape">
+<option value="sphere">Sphere</option>
+<option value="torus">Torus</option>
+<option value="cylinder">Capped cylinder</option>
+</select>
+</label>
+<p class="hint">Sphere radius 1 · torus outer radius about 1.34 · cylinder height 2, radius 1.</p>
+</div>
+<div class="control-group">
+<label for="segments">Segments <output id="segment-value" for="segments">40</output></label>
+<input id="segments" type="range" min="8" max="96" value="40">
+<label for="rings">Rings <output id="ring-value" for="rings">20</output></label>
+<input id="rings" type="range" min="4" max="48" value="20">
+<p class="hint">Defaults: 40 segments, 20 rings — 861 vertices and 1600 triangles on the sphere.</p>
+</div>
+<div class="control-group">
+<h3>View modes</h3>
+<label class="check"><input id="wire" type="checkbox"> Wireframe edges</label>
+<label class="check"><input id="normals" type="checkbox"> Normal colors (object-space shading)</label>
+<p class="hint">Normal colors paint the surface by normal direction; this is a shading mode, not a vector overlay.</p>
+</div>
+<div class="control-group">
+<h3>Export</h3>
+<button id="export" class="primary">Export OBJ</button>
+<p class="hint">Downloads <span class="mono">sphere.obj</span>, <span class="mono">torus.obj</span>, or <span class="mono">cylinder.obj</span> with vertices, normals, and v//vn faces. File import, UVs, and topology editing are not implemented.</p>
+</div>
+</section>
+<section class="panel viewport-panel" aria-labelledby="viewport-heading">
+<h2 id="viewport-heading">Viewport</h2>
+<p class="notice" id="message" role="status">Drag to rotate. Use the mouse wheel to zoom. Geometry is generated locally.</p>
+<div class="canvas-wrap">
+<canvas id="canvas" aria-label="Interactive procedural mesh"></canvas>
+</div>
+<div class="stats-bar" aria-live="polite">
+<p class="meta stats-count" id="counts"></p>
+<p class="hint">Drag to rotate, wheel to zoom. Without WebGL2 the canvas hides but generation and export keep working.</p>
+</div>
+</section>
+</div>
+<section class="panel limits" aria-labelledby="limits-heading">
+<h2 id="limits-heading">Limits and fallback</h2>
+<ul>
+<li>Three parametric surfaces only: sphere, torus, capped cylinder. No file import, no UVs, no topology editing.</li>
+<li>Normal colors use object-space normals as a shading mode; a real normal-vector overlay remains future work.</li>
+<li>Sphere poles and seams keep the classic UV-sphere layout (duplicated seam vertices, degenerate pole rows): fine for display and export, not optimized for simulation.</li>
+<li>Viewing requires WebGL2. Without it the message above reports the failure, the canvas hides, and the mesh still generates and exports.</li>
+<li>Fully offline: no downloaded models, no dependencies, no network requests.</li>
+</ul>
+</section>
+<footer>Raw WebGL2 · No downloaded models · No dependencies · Normal colors use object-space normals</footer>
+</main>
+<script src="geometry.js"></script>
+<script src="renderer.js"></script>
+<script>
 const $=x=>document.getElementById(x);let mesh,renderer;let azimuth=.5,elevation=.4,distance=4;try{renderer=MeshRenderer.create($('canvas'))}catch(e){$('message').textContent=e.message;$('canvas').hidden=true}function draw(){renderer?.draw({azimuth,elevation,distance,wireframe:$('wire').checked,normalColor:$('normals').checked})}function update(){mesh=MeshGeometry.surface($('shape').value,Number($('segments').value),Number($('rings').value));$('segment-value').textContent=$('segments').value;$('ring-value').textContent=$('rings').value;$('counts').textContent=`${mesh.positions.length/3} vertices · ${mesh.indices.length/3} triangles · ${$('shape').value}`;renderer?.update(mesh);draw()}for(const id of ['shape','segments','rings'])$(id).addEventListener('input',update);for(const id of ['wire','normals'])$(id).addEventListener('change',draw);let drag=null;$('canvas').onpointerdown=e=>{drag=[e.clientX,e.clientY];$('canvas').setPointerCapture(e.pointerId)};$('canvas').onpointermove=e=>{if(!drag)return;azimuth+=(e.clientX-drag[0])*.01;elevation=Math.max(-1.4,Math.min(1.4,elevation+(e.clientY-drag[1])*.01));drag=[e.clientX,e.clientY];draw()};$('canvas').onpointerup=$('canvas').onpointercancel=()=>drag=null;$('canvas').onwheel=e=>{e.preventDefault();distance=Math.max(2.4,Math.min(9,distance+e.deltaY*.004));draw()};window.addEventListener('resize',draw);$('export').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([MeshGeometry.obj(mesh)],{type:'text/plain'}));a.download=$('shape').value+'.obj';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)};update();
-</script></body></html>
+</script>
+</body>
+</html>

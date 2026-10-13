@@ -46,6 +46,12 @@ node tests/geometry.test.cjs
 
 The unit checks cover mesh bounds, face winding, normals, and OBJ output.
 
+UI shell regression (static, no browser):
+
+```sh
+node --test tests/ui-shell.test.cjs
+```
+
 Browser end-to-end checks (Playwright 1.63.0, dev-only):
 
 ```sh
@@ -53,9 +59,15 @@ npm ci
 npm run test:browser
 ```
 
+Full default verification (unit + UI shell + browser):
+
+```sh
+npm run verify
+```
+
 The browser checks open the app via `file://` and through a loopback-only static server, assert that no request leaves the local machine, read real pixels back from the WebGL2 drawing buffer (non-blank model, shape changes, wireframe, normal colors), verify exported OBJ geometry for sphere and torus, and exercise the no-WebGL2 fallback. On dev machines they use the installed Chrome; in CI they use the bundled Playwright Chromium. Override with `PW_CHANNEL=chrome|msedge|bundled`.
 
-CI (badge above) runs both suites on every push. A manual `pages.yml` workflow prepares a static artifact for GitHub Pages; it does not enable or publish Pages by itself.
+CI (badge above) runs the full default (`npm run verify`: unit + UI shell + browser) on every push. A manual `pages.yml` workflow prepares a static artifact for GitHub Pages; it does not enable or publish Pages by itself.
 
 ## Limits
 
